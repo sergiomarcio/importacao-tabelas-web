@@ -1,0 +1,9 @@
+﻿<aside class="sidebar" [class.sidebar--collapsed]="appMain.menuCollapsed">
+  <nav class="sidebar__nav" (click)="onMenuClick()">
+    <ul class="sidebar__menu">
+      @for (item of model; track item; let i = $index) {
+        <li app-menuitem [item]="item" [index]="i" [root]="true"></li>
+      }
+    </ul>
+  </nav>
+</aside>

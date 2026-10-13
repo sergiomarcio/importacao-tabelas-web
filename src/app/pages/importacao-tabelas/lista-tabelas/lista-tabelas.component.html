@@ -1,0 +1,93 @@
+﻿@if (carregando || importando) {
+<div class="spinner-overlay" role="status" aria-live="polite">
+  <div class="spinner-container">
+    <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+    <p>{{ importando ? (exportacao ? 'Gerando arquivos Excel: ' : 'Importando tabelas: ') + resultados.length + ' de ' +
+      totalImportacao : 'Carregando tabelas...' }}</p>
+  </div>
+</div>
+}
+<section class="lista-tabelas" [attr.aria-busy]="carregando || importando">
+  <header class="page-header">
+    <span class="page-header__icon"><i class="pi pi-table" aria-hidden="true"></i></span>
+    <div class="page-header__content">
+      <h1 class="page-header__title">{{ exportacao ? 'Exportação de Tabelas para Excel' : 'Importação de Tabelas do SARH
+        / Telesystem / Integra' }}</h1>
+      <p class="page-header__subtitle">{{ exportacao ? 'Selecione uma ou várias tabelas para gerar arquivos Excel no
+        servidor.' : 'Selecione uma ou várias tabelas para importar os arquivos Excel disponíveis no servidor.' }}</p>
+    </div>
+    <button pButton type="button" class="p-button-outlined page-header__action" label="Atualizar" icon="pi pi-refresh"
+      (click)="carregar()" [disabled]="carregando || importando || confirmando"></button>
+  </header>
+  <div class="filtros">
+    <label for="grupo">Grupo
+      <select id="grupo" [(ngModel)]="grupo" [disabled]="importando || confirmando" (ngModelChange)="lista.first = 0">
+        <option value="">Todos os grupos</option>
+        @for (item of grupos; track item) { <option [value]="item">{{ item }}</option> }
+      </select>
+    </label>
+    <label for="busca">Nome da tabela
+      <input id="busca" type="search" [(ngModel)]="busca" placeholder="Buscar tabela"
+        [disabled]="importando || confirmando" (ngModelChange)="lista.first = 0" />
+    </label>
+  </div>
+  @if (erro) { <p role="alert" class="erro">{{ erro }}</p> }
+  @if (exportacao && avisoExportacao) { <p role="status" class="erro">{{ avisoExportacao }}</p> }
+  <div class="acoes">
+    <span>{{ selecionadas.length }} selecionada(s) · {{ tabelasFiltradas.length }} tabela(s) exibida(s)</span>
+    <button pButton type="button" label="Limpar seleção" class="p-button-outlined" (click)="selecionadas = []"
+      [disabled]="!selecionadas.length || importando || confirmando"></button>
+    <button pButton type="button"
+      [label]="importando ? (exportacao ? 'Gerando Excel...' : 'Importando...') : (exportacao ? 'Gerar arquivos Excel' : 'Importar selecionadas')"
+      class="p-button-success"
+      [icon]="importando ? 'pi pi-spin pi-spinner' : (exportacao ? 'pi pi-file-excel' : 'pi pi-download')"
+      (click)="importarSelecionadas()"
+      [disabled]="!selecionadas.length || carregando || importando || confirmando || (exportacao && !exportacaoPermitida)"></button>
+  </div>
+  <p class="ajuda">A seleção é mantida ao filtrar e trocar de página. Clique nos títulos das colunas para ordenar.</p>
+  <div class="table-wrapper">
+    <p-table #lista [value]="tabelasFiltradas" [(selection)]="selecionadas" dataKey="nomeTabela"
+      styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm" [rowHover]="true" [paginator]="true"
+      [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [selectionPageOnly]="true" sortField="nomeTabela" [sortOrder]="1"
+      [tableStyle]="{ 'min-width': '36rem' }" [showCurrentPageReport]="true"
+      currentPageReportTemplate="{first} a {last} de {totalRecords} tabelas">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 4rem">
+            <p-tableHeaderCheckbox [disabled]="importando || confirmando || carregando"></p-tableHeaderCheckbox>
+          </th>
+          <th pSortableColumn="nomeTabela">Tabela <p-sortIcon field="nomeTabela"></p-sortIcon></th>
+          <th pSortableColumn="grupo">Grupo <p-sortIcon field="grupo"></p-sortIcon></th>
+          <th pSortableColumn="dataAtualizacao">Data última atualização <p-sortIcon field="dataAtualizacao"></p-sortIcon></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-tabela>
+        <tr>
+          <td><p-tableCheckbox [value]="tabela" [disabled]="importando || confirmando"></p-tableCheckbox></td>
+          <td>{{ tabela.nomeTabela }}</td>
+          <td>{{ tabela.grupo || 'Sem grupo' }}</td>
+<td>{{ tabela.dataAtualizacao ? (tabela.dataAtualizacao | date:'dd/MM/yyyy HH:mm:ss') : 'Não atualizada' }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5">{{ erro ? 'Lista indisponível.' : 'Nenhuma tabela encontrada.' }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  @if (resultados.length || importando) {
+  <section class="resultados" aria-live="polite">
+    <h2>{{ exportacao ? 'Resultado da exportação' : 'Resultado da importação' }}</h2>
+    <p>{{ resultados.length }} de {{ totalImportacao }} tabela(s) processada(s).</p>
+    <ul>
+      @for (resultado of resultados; track resultado.nomeTabela) {
+      <li [class.erro]="!resultado.sucesso">
+        <strong>{{ resultado.nomeTabela }} — {{ resultado.sucesso ? 'Sucesso' : 'Falha' }}</strong>:
+        {{ resultado.mensagem }}
+      </li>
+      }
+    </ul>
+  </section>
+  }
+</section>

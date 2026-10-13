@@ -1,0 +1,42 @@
+﻿<div class="topbar">
+  <button type="button" class="topbar__hamburger" aria-label="Alternar menu" (click)="appMain.toggleMenuCollapsed()">
+    <i class="pi pi-bars"></i>
+  </button>
+  <div class="topbar__logo">
+    <span class="topbar__project-name">Importação de Tabelas do SARH / Telesystem / Integra</span>
+  </div>
+  @if (appMain.profileMenuOpen) {
+    <div class="topbar__backdrop" (click)="closeProfileMenu()"></div>
+  }
+  <div class="topbar__profile">
+    <button type="button" class="topbar__profile-btn" (click)="onProfileBtnClick()"
+      [attr.aria-expanded]="appMain.profileMenuOpen" aria-controls="menu-usuario">
+      <span class="topbar__profile-info">
+        <span class="topbar__profile-name">{{ nomeUsuario }}</span>
+        <span class="topbar__profile-unit">{{ nomeUnidade }}</span>
+      </span>
+      <span class="topbar__profile-avatar">
+        <img [src]="fotoUsuario" [alt]="'Foto de ' + nomeUsuario" (error)="fotoIndisponivel()" />
+      </span>
+      <i class="pi pi-chevron-down topbar__profile-chevron"></i>
+    </button>
+    @if (appMain.profileMenuOpen) {
+      <ul id="menu-usuario" class="topbar-profile-submenu">
+        <li class="submenu-user-card">
+          <div class="user-card">
+            <div class="user-card__info">
+              <span class="user-card__name">{{ nomeUsuario }}</span>
+              <span class="user-card__unit">{{ nomeUnidade }}</span>
+              <span class="user-card__matricula">Matrícula {{ matricula }}</span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <button type="button" class="submenu-item submenu-item--logout" (click)="logout()">
+            <i class="pi pi-power-off"></i> Sair
+          </button>
+        </li>
+      </ul>
+    }
+  </div>
+</div>

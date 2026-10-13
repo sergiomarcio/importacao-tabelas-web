@@ -1,0 +1,16 @@
+# Auto detect text files and normalize to LF in the repository
+* text=auto eol=lf
+
+# Binaries - never modify
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.zip binary
+*.gz binary

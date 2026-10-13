@@ -1,0 +1,9 @@
+{
+  "/api-ca": {
+    "target": "https://ca2-dev.web.stj.jus.br",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": { "^/api-ca": "/api" },
+    "logLevel": "debug"
+  }
+}

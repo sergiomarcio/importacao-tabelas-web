@@ -1,0 +1,41 @@
+<ng-container>
+
+  <!-- Link: non-router or parent with children -->
+  @if ((!item.routerLink || item.items) && item.visible !== false) {
+  <a [attr.href]="item.url" (click)="itemClick($event)" (mouseenter)="onMouseEnter()"
+    (keydown.enter)="itemClick($event)" [attr.target]="item.target" [attr.tabindex]="0" [ngClass]="item.class"
+    [attr.title]="item.label">
+    <span style="font-weight: 600;" class="menuitem-text">{{item.label}}</span>
+    @if (item.items) {
+    <i class="pi pi-fw pi-chevron-down layout-submenu-toggler"></i>
+    }
+    <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+  </a>
+  }
+
+  <!-- Link: router without children -->
+  @if ((item.routerLink && !item.items) && item.visible !== false) {
+  <a (click)="itemClick($event)" (mouseenter)="onMouseEnter()" [routerLink]="item.routerLink"
+    routerLinkActive="active-menuitem-routerlink" [ngClass]="item.class"
+    [routerLinkActiveOptions]="{exact: !item.preventExact}" [attr.target]="item.target" [attr.tabindex]="0"
+    [attr.title]="item.label">
+    <span style="font-weight: 600;" class="menuitem-text">{{item.label}}</span>
+    @if (item.items) {
+    <i class="pi pi-fw pi-chevron-down layout-submenu-toggler"></i>
+    }
+    <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
+  </a>
+  }
+
+  <!-- Submenu -->
+  @if ((item.items && active) && item.visible !== false) {
+    <ul
+      [@children]="(appMain.isHorizontal() && root) ? (active ? 'visible' : 'hidden') : (active ? 'visibleAnimated' : 'hiddenAnimated')"
+      class="layout-submenu" [style.top.px]="flyoutTop">
+      @for (child of item.items; track child; let i = $index) {
+        <li app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
+      }
+    </ul>
+  }
+
+</ng-container>

@@ -1,0 +1,64 @@
+﻿@if (carregando || salvando) {
+  <div class="spinner-overlay" role="status"><div class="spinner-container">
+    <i class="pi pi-spin pi-spinner" aria-hidden="true"></i><p>{{ carregando ? 'Carregando cadastro...' : 'Salvando alteração...' }}</p>
+  </div></div>
+}
+<section class="lista-tabelas">
+  <header class="page-header">
+    <span class="page-header__icon"><i class="pi pi-list"></i></span>
+    <div class="page-header__content">
+      <h1 class="page-header__title">Cadastro de tabelas</h1>
+      <p class="page-header__subtitle">Adicione ou exclua tabelas disponíveis para importação e exportação.</p>
+    </div>
+    <button pButton type="button" class="p-button-outlined page-header__action" icon="pi pi-refresh"
+      label="Atualizar" (click)="carregar()" [disabled]="ocupado"></button>
+  </header>
+  <form class="filtros cadastro-form" [formGroup]="form" (ngSubmit)="adicionar()">
+    <label for="novo-nome">Nome da tabela
+      <input id="novo-nome" formControlName="nomeTabela" placeholder="Ex.: servidor" maxlength="128" />
+      @if (form.controls.nomeTabela.touched && form.controls.nomeTabela.invalid) {
+        <span class="erro">Informe um nome válido, usando letras, números e sublinhado, sem começar com número.</span>
+      }
+    </label>
+    <label for="novo-grupo">Grupo
+      <input id="novo-grupo" formControlName="grupo" list="grupos-cadastro" placeholder="Informe ou selecione o grupo" />
+      <datalist id="grupos-cadastro">@for (item of grupos; track item) { <option [value]="item"></option> }</datalist>
+      @if (form.controls.grupo.touched && form.controls.grupo.invalid) { <span class="erro">Informe o grupo.</span> }
+    </label>
+    <button pButton type="submit" class="p-button-success" icon="pi pi-plus" label="Adicionar tabela" [disabled]="ocupado"></button>
+  </form>
+  @if (erro) { <p class="erro" role="alert">{{ erro }}</p> }
+  @if (mensagem) { <p class="sucesso" role="status">{{ mensagem }}</p> }
+  <div class="filtros">
+    <label for="filtro-grupo">Grupo
+      <select id="filtro-grupo" [(ngModel)]="grupo" (ngModelChange)="lista.first = 0">
+        <option value="">Todos os grupos</option>
+        @for (item of grupos; track item) { <option [value]="item">{{ item }}</option> }
+      </select>
+    </label>
+    <label for="filtro-nome">Nome da tabela
+      <input id="filtro-nome" type="search" [(ngModel)]="busca" (ngModelChange)="lista.first = 0" placeholder="Buscar tabela" />
+    </label>
+  </div>
+  <div class="table-wrapper">
+    <p-table #lista [value]="filtradas" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]"
+      sortField="nomeTabela" [sortOrder]="1" [rowHover]="true" [showCurrentPageReport]="true"
+      currentPageReportTemplate="{first} a {last} de {totalRecords} tabelas"
+      styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm" [tableStyle]="{'min-width':'48rem'}">
+      <ng-template pTemplate="header"><tr>
+        <th pSortableColumn="id">Código <p-sortIcon field="id"></p-sortIcon></th>
+        <th pSortableColumn="nomeTabela">Tabela <p-sortIcon field="nomeTabela"></p-sortIcon></th>
+        <th pSortableColumn="grupo">Grupo <p-sortIcon field="grupo"></p-sortIcon></th>
+        <th pSortableColumn="dataAtualizacao">Data última atualização <p-sortIcon field="dataAtualizacao"></p-sortIcon></th>
+        <th>Ações</th>
+      </tr></ng-template>
+      <ng-template pTemplate="body" let-tabela><tr>
+        <td>{{ tabela.id }}</td><td>{{ tabela.nomeTabela }}</td><td>{{ tabela.grupo }}</td>
+        <td>{{ tabela.dataAtualizacao ? (tabela.dataAtualizacao | date:'dd/MM/yyyy HH:mm:ss') : 'Não atualizada' }}</td>
+        <td><button pButton type="button" class="p-button-danger p-button-outlined" icon="pi pi-trash"
+          label="Excluir" [disabled]="ocupado" (click)="excluir(tabela)"></button></td>
+      </tr></ng-template>
+      <ng-template pTemplate="emptymessage"><tr><td colspan="5">Nenhuma tabela encontrada.</td></tr></ng-template>
+    </p-table>
+  </div>
+</section>

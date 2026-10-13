@@ -1,0 +1,722 @@
+// ============================================================
+// SIDEBAR
+// ============================================================
+
+// Design tokens
+$sb-bg: #004164;
+$sb-bg-item: rgba(255, 255, 255, 0.08);
+$sb-bg-active: rgba(255, 255, 255, 0.14);
+$sb-accent: #F5AF00;
+$sb-text: #e2e8f0;
+$sb-text-muted: rgba(255, 255, 255, 0.7);
+$sb-border: rgba(255, 255, 255, 0.06);
+$sb-width: 260px;
+$sb-radius: 10px;
+
+// ── Shell ─────────────────────────────────────────────────────────────────────
+.sidebar {
+  width: $sb-width;
+  min-width: $sb-width;
+  flex-shrink: 0;
+  background: $sb-bg;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  transition: width 0.25s ease, min-width 0.25s ease;
+
+  // ── Brand row (logo + profile trigger) ────────────────────────────────────
+  &__brand-row {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    background-color: white;
+    border-bottom: 1px solid #e5e9f0;
+    height: 61px;
+  }
+
+  // ── Hamburger ───────────────────────────────────────────────────────────────
+  &__hamburger-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #004164;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-left: 8px;
+    transition: background 0.18s, color 0.18s;
+
+    &:hover {
+      background: rgba(0, 65, 100, 0.15);
+      color: #004164;
+    }
+  }
+
+  &__profile-trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 22px;
+    border-radius: 8px;
+    transition: background 0.18s, color 0.18s;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &:hover {
+      background: rgba(0, 65, 100, 0.15);
+      color: #a9c3e2;
+    }
+  }
+
+  // ── Brand ──────────────────────────────────────────────────────────────────
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    flex: 1;
+    background-color: #004164;
+
+    &-logo {
+      height: 40px;
+      width: auto;
+    }
+
+    &-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    &:hover &-logo {
+      opacity: 1;
+    }
+  }
+
+  // ── Profile ────────────────────────────────────────────────────────────────
+  &__profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 20px 20px;
+    border-bottom: 1px solid $sb-border;
+    flex-shrink: 0;
+    background-color: #004164;
+    position: relative;
+  }
+
+  &__avatar {
+    width: 72px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.05);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__user-name {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+    margin-bottom: 3px;
+    color: white;
+  }
+
+  &__user-detail {
+    font-size: 11px;
+    text-align: center;
+    letter-spacing: 0.3px;
+    color: white;
+  }
+
+  // ── Nav scroll area ────────────────────────────────────────────────────────
+  &__nav {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 12px;
+    background-color: #004164;
+
+    &::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.10);
+      border-radius: 2px;
+    }
+  }
+
+  &__menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  // ── Section label ──────────────────────────────────────────────────────────
+  &__section {
+    display: flex;
+    flex-direction: column;
+    padding: 18px 8px 6px;
+
+    &:first-child {
+      padding-top: 8px;
+    }
+  }
+
+  &__section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: $sb-accent;
+  }
+
+  &__section-subtitle {
+    font-size: 10px;
+    color: $sb-text-muted;
+    margin-top: 1px;
+    font-style: italic;
+  }
+}
+
+.flyout-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1999;
+}
+
+// ============================================================
+// SIDEBAR PROFILE SUBMENU — dropdown ao lado do ícone
+// ============================================================
+
+$sp-primary: #004164;
+$sp-danger: #B2101D;
+$sp-info: #427591;
+$sp-success: #4D9055;
+$sp-success-dark: #256029;
+$sp-purple: #55284F;
+$sp-text: #2e3440;
+$sp-text-secondary: #4c566a;
+$sp-text-muted: #7b88a1;
+$sp-border: #e5e9f0;
+$sp-border-light: #eceff4;
+$sp-bg-section: #f8f9fb;
+$sp-radius-sm: 6px;
+$sp-radius-md: 10px;
+
+.sidebar-profile-submenu {
+  position: fixed;
+  top: 0;
+  left: 266px;
+  z-index: 2000;
+  width: 300px;
+  background: #ffffff;
+  border-radius: $sp-radius-md;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid $sp-border;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  animation: fadeInDown 0.18s ease-out;
+  overflow: hidden;
+
+  // ── Card do usuário ──────────────────────────────────────
+  .submenu-user-card {
+    border-bottom: 1px solid $sp-border;
+    cursor: default;
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf2 100%);
+
+      &__avatar {
+        flex-shrink: 0;
+
+        img {
+          width: 52px;
+          height: 60px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 3px solid #ffffff;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+      }
+
+      &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      &__name {
+        font-size: 13px;
+        font-weight: 700;
+        color: $sp-text;
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &__unit {
+        font-size: 11px;
+        color: $sp-text-secondary;
+      }
+
+      &__matricula {
+        font-size: 10px;
+        font-weight: 600;
+        color: $sp-text-muted;
+        letter-spacing: 0.3px;
+      }
+    }
+  }
+
+  // ── Divider ──────────────────────────────────────────────
+  .submenu-divider {
+    margin: 4px 16px;
+    border-bottom: 1px solid $sp-border-light;
+    cursor: default;
+    position: relative;
+
+    &__label {
+      position: absolute;
+      top: -7px;
+      left: 0;
+      background: #ffffff;
+      padding-right: 8px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: $sp-text-muted;
+    }
+  }
+
+  // ── Item genérico ────────────────────────────────────────
+  .submenu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: $sp-bg-section;
+    }
+
+    &__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: $sp-radius-sm;
+      flex-shrink: 0;
+
+      i {
+        font-size: 14px;
+      }
+
+      &--admin {
+        background: rgba($sp-purple, 0.12);
+
+        i {
+          color: darken($sp-purple, 10%);
+        }
+      }
+
+      &--avaliador {
+        background: rgba($sp-primary, 0.10);
+
+        i {
+          color: $sp-primary;
+        }
+      }
+
+      &--avaliado {
+        background: rgba($sp-success, 0.15);
+
+        i {
+          color: $sp-success-dark;
+        }
+      }
+
+      &--sync {
+        background: rgba($sp-info, 0.15);
+
+        i {
+          color: darken($sp-info, 15%);
+        }
+      }
+
+      &--logout {
+        background: rgba($sp-danger, 0.10);
+
+        i {
+          color: $sp-danger;
+        }
+      }
+    }
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    &__label {
+      font-size: 13px;
+      font-weight: 600;
+      color: $sp-text;
+    }
+
+    &__detail {
+      font-size: 11px;
+      color: $sp-text-muted;
+    }
+
+    &__arrow {
+      font-size: 10px;
+      color: $sp-border;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    &:hover &__arrow {
+      color: $sp-primary;
+      transform: translateX(2px);
+    }
+
+    &--highlight {
+      background: rgba($sp-info, 0.06);
+      border-left: 3px solid $sp-info;
+      padding-left: 13px;
+
+      &:hover {
+        background: rgba($sp-info, 0.12);
+      }
+    }
+
+    &--logout:hover {
+      background: rgba($sp-danger, 0.04);
+
+      .submenu-item__icon {
+        background: rgba($sp-danger, 0.16);
+      }
+    }
+  }
+}
+
+// ── Sidebar colapsada ─────────────────────────────────────────────────────────
+$sb-collapsed-width: 64px;
+
+.sidebar--collapsed {
+  width: $sb-collapsed-width !important;
+  min-width: $sb-collapsed-width !important;
+  transition: width 0.25s ease, min-width 0.25s ease;
+  overflow: visible !important;
+
+  .sidebar__profile {
+    display: none;
+  }
+
+  .sidebar__profile-trigger {
+    display: none;
+  }
+
+  .sidebar__section-title {
+    display: none;
+  }
+
+  .sidebar__section {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .menuitem-text,
+  .layout-submenu-toggler {
+    display: none !important;
+  }
+
+  .layout-submenu {
+    display: none !important;
+  }
+
+  // Flyout: exibe o submenu como painel lateral quando o item está ativo
+  li.active-menuitem>ul.layout-submenu {
+    display: block !important;
+    position: fixed;
+    left: $sb-collapsed-width;
+    min-width: 220px;
+    height: auto !important;
+    background: $sb-bg;
+    border-radius: $sb-radius;
+    box-shadow: 6px 6px 24px rgba(0, 0, 0, 0.35);
+    z-index: 1000;
+    padding: 6px 8px;
+    overflow: visible;
+
+    .menuitem-text {
+      display: block !important;
+    }
+
+    >li>a {
+      padding: 9px 14px;
+
+      &::before {
+        display: inline-block;
+      }
+    }
+  }
+
+  .sidebar__menu>li>a {
+    justify-content: center;
+    padding: 10px 0;
+
+    .layout-menuitem-icon {
+      width: auto;
+      font-size: 18px;
+    }
+  }
+
+  .sidebar__nav {
+    padding: 8px 4px;
+    overflow: visible !important;
+  }
+
+  .sidebar__hamburger-btn {
+    margin: 0 auto;
+  }
+}
+
+// ── Root menu items ───────────────────────────────────────────────────────────
+.sidebar__menu>li:not(.sidebar__section) {
+  margin-bottom: 2px;
+
+  >a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: $sb-radius;
+    color: $sb-text;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+
+    .layout-menuitem-icon {
+      order: 0;
+      font-size: 15px;
+      color: $sb-text-muted;
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+      transition: color 0.2s;
+    }
+
+    .menuitem-text {
+      order: 1;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .layout-submenu-toggler {
+      order: 2;
+      font-size: 11px;
+      color: $sb-text-muted;
+      transform: rotate(-90deg);
+      transition: transform 0.3s ease, color 0.2s;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: $sb-bg-item;
+      color: #ffffff;
+
+      .layout-menuitem-icon {
+        color: $sb-accent;
+      }
+
+      .layout-submenu-toggler {
+        color: $sb-text;
+      }
+    }
+  }
+
+  &.active-menuitem>a {
+    background: $sb-bg-item;
+    color: #ffffff;
+
+    .layout-menuitem-icon {
+      color: $sb-accent;
+    }
+
+    .layout-submenu-toggler {
+      color: $sb-text;
+      transform: rotate(0deg);
+    }
+  }
+
+  >a.active-menuitem-routerlink {
+    background: $sb-bg-active;
+    color: #ffffff;
+    font-weight: 600;
+
+    .layout-menuitem-icon {
+      color: $sb-accent;
+    }
+
+    .layout-submenu-toggler {
+      color: $sb-text;
+    }
+  }
+}
+
+// ── Submenu (children) ────────────────────────────────────────────────────────
+.sidebar__menu .layout-submenu {
+  list-style: none;
+  margin: 2px 0 4px 0;
+  padding: 0;
+  overflow: hidden;
+
+  >li {
+    margin-bottom: 1px;
+
+    >a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px 8px 14px;
+      border-radius: $sb-radius;
+      color: #ebebeb;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+
+      &::before {
+        content: '';
+        display: block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: $sb-text-muted;
+        flex-shrink: 0;
+        transition: background 0.2s;
+      }
+
+      .layout-menuitem-icon {
+        display: none;
+      }
+
+      .menuitem-text {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &:hover {
+        background: $sb-bg-item;
+        color: #ffffff;
+
+        &::before {
+          background: $sb-accent;
+        }
+      }
+
+      &.active-menuitem-routerlink {
+        background: $sb-bg-active;
+        color: #ffffff;
+        font-weight: 600;
+
+        &::before {
+          background: $sb-accent;
+        }
+      }
+    }
+  }
+}
+
+// ── Ícone ativo no sidebar colapsado (filho está na rota atual) ───────────────
+.sidebar--collapsed {
+  .sidebar__menu > li.icon-active-menuitem:not(.active-menuitem) > a {
+    background: $sb-bg-item;
+    color: #ffffff;
+
+    .layout-menuitem-icon {
+      color: $sb-accent;
+    }
+  }
+}
+
+// ── Separator between items in long submenus ──────────────────────────────────
+.layout-submenu-separator {
+  padding: 4px 12px;
+
+  &__line {
+    height: 1px;
+    background: $sb-border;
+  }
+}
+
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.2px;
+}
+
+.tag-sim {
+  background: #c6f6d5;
+  color: #22543d;
+  margin-top: 10px;
+}
